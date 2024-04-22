@@ -9,13 +9,6 @@ def fetch_flashcards():
     flashcards = c.fetchall()
     num_cards = len(flashcards)
     conn.close()
-    flashcards = [
-        {"question": "What is the capital of France?", "answer": "Paris"},
-        {"question": "What is the largest planet in our solar system?", "answer": "Jupiter"},
-        {"question": "Who created Python?", "answer": "Guido van Rossum"},
-        {"question": "what is 100*2", "answer": "200"}
-    ]
-    num_cards = len(flashcards)
     return flashcards
 
 def show_next_card():
@@ -54,12 +47,42 @@ def add_flashcard():
         if num_cards == 1:
             show_next_card()  # Display the first flashcard when added
 
+def save_user_info():
+    global user_name, user_major
+    user_name = name_entry.get()
+    user_major = major_entry.get()
+    name_entry.delete(0, tk.END)
+    major_entry.delete(0, tk.END)
+    user_info_label.config(text=f"Name: {user_name}\nMajor: {user_major}")
+
 root = tk.Tk()
 root.title("Flashcard App")
-root.geometry("500x400")
+root.geometry("500x500")
 
 main_frame = tk.Frame(root, bg="lightblue", padx=20, pady=20)
 main_frame.pack(fill=tk.BOTH, expand=True)
+
+# User Information Section
+user_info_frame = tk.Frame(main_frame, bg="lightblue")
+user_info_frame.pack(pady=10)
+
+name_label = tk.Label(user_info_frame, text="Name:", font=("Arial", 12, "bold"), bg="lightblue")
+name_label.grid(row=0, column=0, padx=5, pady=5)
+
+name_entry = tk.Entry(user_info_frame, font=("Arial", 12))
+name_entry.grid(row=0, column=1, padx=5, pady=5)
+
+major_label = tk.Label(user_info_frame, text="Major:", font=("Arial", 12, "bold"), bg="lightblue")
+major_label.grid(row=1, column=0, padx=5, pady=5)
+
+major_entry = tk.Entry(user_info_frame, font=("Arial", 12))
+major_entry.grid(row=1, column=1, padx=5, pady=5)
+
+save_info_button = tk.Button(user_info_frame, text="Save Info", font=("Arial", 12), bg="lightblue", command=save_user_info)
+save_info_button.grid(row=2, columnspan=2, pady=10)
+
+user_info_label = tk.Label(user_info_frame, text="", font=("Arial", 12), bg="lightblue")
+user_info_label.grid(row=3, columnspan=2, pady=5)
 
 # Flashcard Display Section
 flashcard_display_frame = tk.Frame(main_frame, bg="lightblue")
@@ -88,17 +111,33 @@ next_button.pack(side=tk.LEFT, padx=10)
 add_flashcard_frame = tk.Frame(main_frame, bg="lightblue")
 add_flashcard_frame.pack(pady=10)
 
+new_question_label = tk.Label(add_flashcard_frame, text="New Question:", font=("Arial", 12), bg="lightblue")
+new_question_label.grid(row=0, column=0, padx=5, pady=5)
+
 new_question_entry = tk.Entry(add_flashcard_frame, font=("Arial", 12))
-new_question_entry.grid(row=0, column=0, padx=5)
+new_question_entry.grid(row=0, column=1, padx=5, pady=5)
+
+new_answer_label = tk.Label(add_flashcard_frame, text="New Answer:", font=("Arial", 12), bg="lightblue")
+new_answer_label.grid(row=1, column=0, padx=5, pady=5)
 
 new_answer_entry = tk.Entry(add_flashcard_frame, font=("Arial", 12))
-new_answer_entry.grid(row=0, column=1, padx=5)
+new_answer_entry.grid(row=1, column=1, padx=5, pady=5)
 
 add_flashcard_button = tk.Button(add_flashcard_frame, text="Add Flashcard", font=("Arial", 12), bg="lightblue", activebackground="blue", command=add_flashcard)
-add_flashcard_button.grid(row=0, column=2, padx=5)
+add_flashcard_button.grid(row=2, columnspan=2, pady=10)
 
+# Provided Questions and Answers
+provided_flashcards = [
+    {"question": "What is the capital of France?", "answer": "Paris"},
+    {"question": "What is the largest planet in our solar system?", "answer": "Jupiter"},
+    {"question": "Who created Python?", "answer": "Guido van Rossum"},
+    {"question": "what is 100*2", "answer": "200"},
+    {"question": "When python was created?", "answer": "1991"}
+]
+
+flashcards = provided_flashcards
+num_cards = len(flashcards)
 current_card_index = 0
-num_cards = 0
-flashcards = fetch_flashcards()  # Fetch existing flashcards
+question_text_label.config(text=flashcards[current_card_index]["question"])
 
 root.mainloop()
